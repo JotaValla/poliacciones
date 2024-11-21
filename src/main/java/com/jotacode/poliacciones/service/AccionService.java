@@ -31,13 +31,47 @@ public class AccionService {
         Usuario usuario = usuarioService.obtenerUsuarioPorId(accion.getUsuario().getIdUsuario());
         accion.setUsuario(usuario);
 
-        // Agregar la fecha actual y el precio desde la API
-        Double precioTotal = alphaVantageService.obtenerPrecioAccion(accion.getNombreAccion()) * accion.getCantidad();
-        accion.setPrecio(precioTotal);
-        accion.setFecha(LocalDate.now());
+        // Usar la fecha proporcionada por el usuario
+        LocalDate fechaSeleccionada = accion.getFecha();
+        if (fechaSeleccionada == null || fechaSeleccionada.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha no puede ser futura y debe ser válida.");
+        }
 
-        // Guardar la acción en la base de datos
+        // Obtener el precio basado en la fecha seleccionada
+        Double precio = obtenerPrecioPorSimboloYFecha(accion.getNombreAccion(), fechaSeleccionada);
+        accion.setPrecio(precio);
+
+        // Guardar la acción con la fecha seleccionada y el precio correspondiente
         return accionRepository.save(accion);
+    }
+
+
+    public Double obtenerPrecioPorSimboloYFecha(String simbolo, LocalDate fecha) {
+        System.out.println("Buscando precio para símbolo: " + simbolo + " en la fecha: " + fecha);
+
+        // Verifica que el símbolo sea válido
+        if (!alphaVantageService.verificarSimbolo(simbolo)) {
+            throw new IllegalArgumentException("El símbolo de la acción no es válido: " + simbolo);
+        }
+
+        // Si la fecha es hoy, obtener el precio actual
+        if (fecha.isEqual(LocalDate.now())) {
+            Double precioActual = alphaVantageService.obtenerPrecioActual(simbolo);
+            System.out.println("Precio actual: " + precioActual);
+            return precioActual;
+        }
+
+        // Para fechas anteriores, obtener el precio de cierre
+        Double precio = alphaVantageService.obtenerPrecioAccionPorFecha(simbolo, fecha);
+        System.out.println("Precio de cierre: " + precio);
+
+        if (precio == null) {
+            throw new IllegalArgumentException(
+                    "No se encontraron datos para el símbolo " + simbolo + " en la fecha " + fecha
+            );
+        }
+
+        return precio;
     }
 
 
