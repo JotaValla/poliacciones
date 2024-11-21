@@ -84,12 +84,17 @@ public class TiingoService {
 
         try {
             Map<String, Object>[] respuesta = clienteHttp.getForObject(url, Map[].class);
+
             if (respuesta != null && respuesta.length > 0) {
-                return (Double) respuesta[0].get("close");
+                return Double.parseDouble(respuesta[0].get("close").toString());
             }
-            return null;
+
+            System.out.println("No se encontraron datos para la fecha: " + fecha);
+            return null; // Devuelve null si no hay datos disponibles
         } catch (Exception e) {
-            throw new RuntimeException("Error al obtener precio por fecha: " + e.getMessage());
+            System.out.println("Error al obtener precio por fecha: " + e.getMessage());
+            throw new RuntimeException("Error al consultar Tiingo API: " + e.getMessage());
         }
     }
+
 }

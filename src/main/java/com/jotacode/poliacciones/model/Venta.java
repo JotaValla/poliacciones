@@ -8,26 +8,19 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data @AllArgsConstructor @NoArgsConstructor
-@Entity @Table(name = "ventas")
+@Table(name = "ventas")
+@Entity
 public class Venta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "venta_id")
-    private Long idCuenta;
+    private Long id;
 
-    @Column(name = "nombre_accion")
-    private String nombreAccion;
+    @ManyToOne
+    @JoinColumn(name = "accion_id", nullable = false)
+    private Accion accion;
     private Integer cantidad;
     private Double precio;
     private LocalDate fechaVenta;
-
-    @Column(name = "ganancia_perdida")
-    private Double gananciaPerdida;
-
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
-
 
 }

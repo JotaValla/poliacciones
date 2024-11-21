@@ -47,11 +47,32 @@ public class AccionService {
     }
 
     public Double obtenerPrecioPorSimboloYFecha(String simbolo, LocalDate fecha) {
-        if (fecha.isEqual(LocalDate.now())) {
-            return tiingoService.obtenerPrecioAccion(simbolo); // Precio actual
+        try {
+            if (fecha.isEqual(LocalDate.now())) {
+                // Si la fecha es hoy, obtener el precio actual
+                Double precioActual = tiingoService.obtenerPrecioActual(simbolo);
+                if (precioActual == null) {
+                    throw new IllegalArgumentException("No se pudo obtener el precio actual para el símbolo: " + simbolo);
+                }
+                return precioActual;
+            }
+
+            // Para fechas anteriores, obtener el precio de cierre
+            Double precioPorFecha = tiingoService.obtenerPrecioAccionPorFecha(simbolo, fecha);
+            if (precioPorFecha == null) {
+                throw new IllegalArgumentException("No se encontraron datos para el símbolo " + simbolo + " en la fecha " + fecha);
+            }
+
+            return precioPorFecha;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error específico: " + e.getMessage());
+            throw e; // Lanza la excepción para manejarla en el controlador
+        } catch (Exception e) {
+            System.out.println("Error general al obtener precio: " + e.getMessage());
+            throw new RuntimeException("Error interno al obtener el precio de la acción.");
         }
-        return tiingoService.obtenerPrecioAccionPorFecha(simbolo, fecha); // Precio histórico
     }
+
 
     public List<Accion> obtenerAccionesPorUsuario(Long idUsuario) {
         return accionRepository.findByUsuarioIdUsuario(idUsuario);
@@ -114,5 +135,30 @@ public class AccionService {
             accionRepository.save(accion);
         }
     }
+
+
+    public Accion actualizarAccion(Accion accion) {
+        // Verificar si la acción existe antes de actualizarla
+        Accion accionExistente = accionRepository.findById(accion.getIdAccion())
+                .orElseThrow(() -> new RuntimeException("Acción no encontrada para actualizar"));
+
+        // Actualizar los datos necesarios
+        accionExistente.setCantidad(accion.getCantidad());
+        accionExistente.setPrecio(accion.getPrecio());
+        accionExistente.setFecha(accion.getFecha());
+
+        // Guardar y devolver la acción actualizada
+        return accionRepository.save(accionExistente);
+    }
+
+    public void eliminarAccion(Long accionId) {
+        // Verificar si la acción existe antes de eliminarla
+        Accion accion = accionRepository.findById(accionId)
+                .orElseThrow(() -> new RuntimeException("Acción no encontrada para eliminar"));
+
+        // Eliminar la acción
+        accionRepository.delete(accion);
+    }
+
 
 }

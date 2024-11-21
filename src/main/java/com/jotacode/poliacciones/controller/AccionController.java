@@ -1,7 +1,9 @@
 package com.jotacode.poliacciones.controller;
 
 import com.jotacode.poliacciones.model.Accion;
+import com.jotacode.poliacciones.model.Venta;
 import com.jotacode.poliacciones.service.AccionService;
+import com.jotacode.poliacciones.service.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,9 @@ public class AccionController {
 
     @Autowired
     private AccionService accionService;
+
+    @Autowired
+    private VentaService ventaService;
 
     @PostMapping("/comprar")
     public Accion comprarAccion(@RequestBody Accion accion) {
@@ -48,13 +53,14 @@ public class AccionController {
                     "fecha", fechaConsulta.toString()
             );
         } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            throw new IllegalArgumentException(e.getMessage());
+            System.out.println("Error específico: " + e.getMessage());
+            return Map.of("message", e.getMessage());
         } catch (Exception e) {
             System.out.println("Error general: " + e.getMessage());
-            throw new RuntimeException("Error interno del servidor. Intenta de nuevo más tarde.");
+            return Map.of("message", "Error interno del servidor.");
         }
     }
+
 
 
     @GetMapping("/{accionId}")
@@ -75,7 +81,15 @@ public class AccionController {
 
     @PostMapping("/vender")
     public void venderAccion(@RequestBody Map<String, Object> datos) {
-        accionService.venderAccion(datos);
+        System.out.println("Datos recibidos en el controlador: " + datos);
+        accionService.venderAccion(datos); // Aquí llama al servicio
+    }
+
+
+
+    @GetMapping("/ventas/{accionId}")
+    public List<Venta> obtenerHistorialVentas(@PathVariable Long accionId) {
+        return ventaService.obtenerVentasPorAccion(accionId);
     }
 
 
