@@ -59,6 +59,15 @@
             <version>9.1.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/top.cptl/tiingo4j -->
+        <dependency>
+            <groupId>io.github.gracg</groupId>
+            <artifactId>tiingo4j</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>

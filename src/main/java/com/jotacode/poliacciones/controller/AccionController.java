@@ -2,7 +2,6 @@ package com.jotacode.poliacciones.controller;
 
 import com.jotacode.poliacciones.model.Accion;
 import com.jotacode.poliacciones.service.AccionService;
-import com.jotacode.poliacciones.service.AlphaVantageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +15,6 @@ public class AccionController {
 
     @Autowired
     private AccionService accionService;
-
-    @Autowired
-    private AlphaVantageService alphaVantageService;
 
     @PostMapping("/comprar")
     public Accion comprarAccion(@RequestBody Accion accion) {
@@ -61,7 +57,26 @@ public class AccionController {
     }
 
 
+    @GetMapping("/{accionId}")
+    public Accion obtenerAccionPorId(@PathVariable Long accionId) {
+        return accionService.obtenerAccionPorId(accionId);
+    }
 
+    @GetMapping("/ver-ganancia/{accionId}")
+    public Map<String, Object> calcularGananciaPerdida(@PathVariable Long accionId) {
+        try {
+            return accionService.calcularGananciaPerdida(accionId);
+        } catch (RuntimeException e) {
+            System.out.println("Error al calcular ganancia/pérdida: " + e.getMessage());
+            throw new RuntimeException("Error al calcular ganancia/pérdida: " + e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/vender")
+    public void venderAccion(@RequestBody Map<String, Object> datos) {
+        accionService.venderAccion(datos);
+    }
 
 
 }

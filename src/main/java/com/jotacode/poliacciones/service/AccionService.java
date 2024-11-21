@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AccionService {
@@ -19,11 +20,11 @@ public class AccionService {
     private UsuarioService usuarioService;
 
     @Autowired
-    private AlphaVantageService alphaVantageService;
+    private TiingoService tiingoService;
 
     public Accion registrarCompra(Accion accion) {
         // Verificar si el símbolo de la acción es válido
-        if (!alphaVantageService.verificarSimbolo(accion.getNombreAccion())) {
+        if (!tiingoService.verificarSimbolo(accion.getNombreAccion())) {
             throw new IllegalArgumentException("El símbolo de la acción no es válido: " + accion.getNombreAccion());
         }
 
@@ -45,39 +46,73 @@ public class AccionService {
         return accionRepository.save(accion);
     }
 
-
     public Double obtenerPrecioPorSimboloYFecha(String simbolo, LocalDate fecha) {
-        System.out.println("Buscando precio para símbolo: " + simbolo + " en la fecha: " + fecha);
-
-        // Verifica que el símbolo sea válido
-        if (!alphaVantageService.verificarSimbolo(simbolo)) {
-            throw new IllegalArgumentException("El símbolo de la acción no es válido: " + simbolo);
-        }
-
-        // Si la fecha es hoy, obtener el precio actual
         if (fecha.isEqual(LocalDate.now())) {
-            Double precioActual = alphaVantageService.obtenerPrecioActual(simbolo);
-            System.out.println("Precio actual: " + precioActual);
-            return precioActual;
+            return tiingoService.obtenerPrecioAccion(simbolo); // Precio actual
+        }
+        return tiingoService.obtenerPrecioAccionPorFecha(simbolo, fecha); // Precio histórico
+    }
+
+    public List<Accion> obtenerAccionesPorUsuario(Long idUsuario) {
+        return accionRepository.findByUsuarioIdUsuario(idUsuario);
+    }
+
+    public Accion obtenerAccionPorId(Long accionId) {
+        return accionRepository.findById(accionId)
+                .orElseThrow(() -> new RuntimeException("Acción no encontrada"));
+    }
+
+    public Map<String, Object> calcularGananciaPerdida(Long accionId) {
+        Accion accion = obtenerAccionPorId(accionId);
+
+        // Obtener el precio actual desde la API de Tiingo
+        Double precioActual = tiingoService.obtenerPrecioActual(accion.getNombreAccion());
+        if (precioActual == null) {
+            throw new RuntimeException("No se pudo obtener el precio actual de la acción.");
         }
 
-        // Para fechas anteriores, obtener el precio de cierre
-        Double precio = alphaVantageService.obtenerPrecioAccionPorFecha(simbolo, fecha);
-        System.out.println("Precio de cierre: " + precio);
+        // Calcular ganancia o pérdida
+        Double ganancia = null;
+        Double perdida = null;
 
-        if (precio == null) {
-            throw new IllegalArgumentException(
-                    "No se encontraron datos para el símbolo " + simbolo + " en la fecha " + fecha
-            );
+        if (precioActual > accion.getPrecio()) {
+            ganancia = precioActual - accion.getPrecio();
+        } else if (precioActual < accion.getPrecio()) {
+            perdida = accion.getPrecio() - precioActual;
         }
 
-        return precio;
+        // Registrar el log para depuración
+        System.out.println("Ganancia: " + ganancia + ", Pérdida: " + perdida + ", Precio Actual: " + precioActual);
+
+        return Map.of(
+                "ganancia", ganancia != null ? ganancia : 0.0, // Evitar valores nulos
+                "perdida", perdida != null ? perdida : 0.0, // Evitar valores nulos
+                "fechaActual", LocalDate.now().toString(),
+                "valorActual", precioActual
+        );
     }
 
 
 
-    public List<Accion> obtenerAccionesPorUsuario(Long idUsuario) {
-        return accionRepository.findByUsuarioIdUsuario(idUsuario);
+    public void venderAccion(Map<String, Object> datos) {
+        Long accionId = Long.valueOf(datos.get("accionId").toString());
+        Integer cantidad = Integer.valueOf(datos.get("cantidad").toString());
+
+        Accion accion = obtenerAccionPorId(accionId);
+
+        if (cantidad > accion.getCantidad()) {
+            throw new IllegalArgumentException("No puedes vender más acciones de las que posees.");
+        }
+
+        // Actualizar la cantidad de acciones
+        accion.setCantidad(accion.getCantidad() - cantidad);
+
+        // Si la cantidad restante es 0, se elimina la acción
+        if (accion.getCantidad() == 0) {
+            accionRepository.delete(accion);
+        } else {
+            accionRepository.save(accion);
+        }
     }
 
 }
