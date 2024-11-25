@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -18,9 +19,17 @@ public class Venta {
 
     @ManyToOne
     @JoinColumn(name = "accion_id", nullable = false)
+    @NotNull(message = "La acción es requerida") @NotBlank(message = "La acción es requerida")
     private Accion accion;
+
+    @NotNull(message = "La cantidad es requerida") @NotBlank(message = "La cantidad es requerida")
+    @Min(value = 1, message = "La cantidad debe ser mayor a 0")
     private Integer cantidad;
+
+    @NotNull(message = "El precio es requerido") @NotBlank(message = "El precio es requerido")
     private Double precio;
+
+    @NotNull(message = "La fecha de venta es requerida") @NotBlank(message = "La fecha de venta es requerida")
     private LocalDate fechaVenta;
 
 }
