@@ -48,8 +48,8 @@
   - Se integrará para obtener datos financieros en tiempo real e históricos sobre precios de acciones.
 
 
-## Arquitectura en Capas
-- El sistema se desarrollará siguiendo el modelo de **Arquitectura en Capas**, lo que proporcionará una clara separación de responsabilidades y facilitará el mantenimiento y escalabilidad de la aplicación.
+## Modelo Vista Controlador (MVC)
+- El sistema se desarrollará siguiendo el patrón de diseño **Modelo Vista Controlador (MVC)**, lo que permitirá una clara separación de responsabilidades entre la lógica de negocio, la interfaz de usuario y el control del flujo de la aplicación.
 
 ## Estructura del Repositorio
 El repositorio contará con las siguientes **4 ramas** principales:
