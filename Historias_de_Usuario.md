@@ -59,7 +59,7 @@
 5. Validar el campo del símbolo bursátil en el formulario para que acepte únicamente simbolos existentes
 6. Validar el campo de Valor de compra y Cantidad de acciones en el formulario para que acepte únicamente.
 
-## Historia de Usuario 2: Ver Detalles de un Registro
+# Historia de Usuario 2: Ver Detalles de un Registro
 
 **Como** usuario,  
 **quiero** poder seleccionar un registro específico de mis compras de acciones,  
@@ -72,13 +72,14 @@
 **Cuando** el usuario selecciona un registro específico,  
 **Entonces** el sistema debe mostrar los detalles de ese registro.
 
+## Tareas
 1. Actualizar la interfaz del usuario para mostrar todos los registros de compra de acciones.
 2. Implementar la funcionalidad para que el usuario pueda seleccionar un registro específico de la lista.
 3. Crear la interfaz para mostrar los detalles del registro seleccionado.
 
 
 
-## Historia de Usuario 3: Cálculo de Ganancia/Pérdida
+# Historia de Usuario 3: Cálculo de Ganancia/Pérdida
 **Como** usuario,  
 **quiero** ver la ganancia o pérdida de mis acciones,  
 **para** poder evaluar el rendimiento de mi inversión en tiempo real.
