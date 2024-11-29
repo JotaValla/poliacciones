@@ -3,7 +3,7 @@
 ## Roles y Responsabilidades
 
 ### Paola Gamboa y Alexander Morales
-- Serán responsables del diseño y la implementación de los estilos CSS para la aplicación.
+- Serán responsables del diseño en HTML y la implementación de los estilos CSS para la aplicación.
 
 ### Jimmy Valladares
 - Será responsable del desarrollo del backend.
@@ -34,7 +34,7 @@
 - **Base de datos relacional** MySQL.
 
 ### Frontend:
-- Estilos definidos mediante **CSS**.
+- HTML y estilos definidos mediante **CSS**.
 
 ### Control de Versiones:
 - **Git** se utilizará para la gestión del código fuente.
