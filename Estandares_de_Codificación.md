@@ -9,13 +9,14 @@ Como parte de la preparación para el desarrollo de este proyecto, se han defini
      - Model
      - Service
      - Repository
+     - Error
    - **Clases:** Los nombres de las clases seguirán la convención PascalCase.
    - **Métodos:** Los métodos seguirán la convención camelCase y serán descriptivos sobre lo que hacen.
    - **Variables:** Las variables también seguirán camelCase.
 
 2. **Estructura del Código:**
    - **Archivos y carpetas:**
-     - La estructura seguirá el patrón estándar de Spring Boot (Controller, Model, Repository, Services y Config).
+     - La estructura seguirá el patrón estándar de Spring Boot (Controller, Model, Repository, Services).
 
 3. **Manejo de Errores:**
    - **Control de errores global:**
