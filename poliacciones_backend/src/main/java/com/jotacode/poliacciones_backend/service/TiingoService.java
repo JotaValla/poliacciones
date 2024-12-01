@@ -30,8 +30,7 @@ public class TiingoService {
         String url = BASE_URL + "/daily/" + simbolo + "/prices?token=" + apiToken;
 
         try {
-            ResponseEntity<List<Map<String, Object>>> response =
-                    clienteHttp.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+            ResponseEntity<List<Map<String, Object>>> response = clienteHttp.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
             List<Map<String, Object>> precios = response.getBody();
             if (precios != null && !precios.isEmpty()) {

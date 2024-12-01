@@ -56,9 +56,18 @@ public class AccionController {
     }
 
     @GetMapping("/{accionId}")
-    public Accion obtenerAccionPorId(@PathVariable Long accionId) {
-        return accionService.obtenerAccionPorId(accionId);
+    public Map<String, Object> obtenerAccionPorId(@PathVariable Long accionId) {
+        Accion accion = accionService.obtenerAccionPorId(accionId);
+        Double valorTotal = accion.getCantidad() * accion.getPrecio();
+        return Map.of(
+                "cantidad", accion.getCantidad(),
+                "fecha", accion.getFecha(),
+                "precio", accion.getPrecio(),
+                "nombreAccion", accion.getNombreAccion(),
+                "valorTotal", valorTotal
+        );
     }
+
 
     @GetMapping("/ver-ganancia/{accionId}")
     public Map<String, Object> calcularGananciaPerdida(@PathVariable Long accionId) {
