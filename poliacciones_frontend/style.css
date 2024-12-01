@@ -1,14 +1,15 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #f4f4f9;
+    background: url(/poliacciones_frontend/images/fondo_acciones.png);
+    background-size: cover;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background: white;
+    background: rgba(255, 255, 255,0.3);
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
