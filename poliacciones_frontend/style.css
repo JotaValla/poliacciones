@@ -25,12 +25,23 @@ form {
     border-radius: 15px;
 }
 
-input, button {
+input {
     margin: 10px 0;
     padding: 10px;
     font-size: 16px;
     border-radius: 15px;
+    background-color: rgb(58, 56, 56);
 }
+
+button {
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 18px;
+  border-radius:50px;
+  background-color: rgb(123, 30, 30);
+}
+
+
 
 table {
     width: 100%;
