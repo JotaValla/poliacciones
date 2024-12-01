@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Configurar el calendario con Flatpickr
   const fechaInput = document.getElementById("fechaAccionInput");
   flatpickr(fechaInput, {
-    dateFormat: "Y-m-d", // Formato de fecha
-    maxDate: "today", // Fecha máxima
+    dateFormat: "Y-m-d", // Formato de fecha (año-mes-día)
+    maxDate: "today", // Fecha máxima permitida (hoy)
     disable: [
       function (date) {
         // Deshabilitar sábados (6) y domingos (0)
@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     ],
     onChange: function (selectedDates, dateStr) {
+      // Validación directa en el selector
       if (!dateStr) {
         showModal("El mercado cierra los sábados y domingos. Seleccione otra fecha.");
       }
@@ -59,7 +60,15 @@ document.getElementById("compraForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const fechaInput = document.getElementById("fechaAccionInput");
-  const fechaSeleccionada = new Date(fechaInput.value);
+  const fechaSeleccionada = fechaInput.value
+    ? new Date(fechaInput.value.replace(/-/g, "/"))
+    : null;
+
+  if (!fechaSeleccionada) {
+    showModal("Por favor selecciona una fecha válida.");
+    return;
+  }
+
   const diaSemana = fechaSeleccionada.getDay();
 
   if (diaSemana === 0 || diaSemana === 6) {
